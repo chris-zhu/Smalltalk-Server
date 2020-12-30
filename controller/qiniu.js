@@ -11,32 +11,43 @@ function uptoken() {
   return putPolicy.uploadToken(mac)
 }
 
-// const a = uptoken()
-// console.log(a);
-
-function a() {
+/**
+ * 获取bucket下面的所有文件
+ * @param {string} bucket bucket 名称
+ */
+async function getBucketFileList(bucket) {
   const qiniu = require('qiniu')
-  // qiniu.conf.ACCESS_KEY = Ak
-  // qiniu.conf.SECRET_KEY = Sk
-  //构建bucketmanager对象
   const mac = new qiniu.auth.digest.Mac(Ak, Sk)
-  var client = new qiniu.rs.BucketManager(mac)
-  //你要测试的空间， 并且这个key在你空间中存在
-  bucket = 'chris-server'
-  key = '4k_1.jpg'
-  //移动到的目标空间名和重命名的key
-  dstbucket = 'smalltalk'
-  dstkey = '4k_1.jpg'
-  //移动资源
-  client.move(bucket, key, dstbucket, dstkey, null, function (err, ret) {
-    if (!err) {
-      // ok
-    } else {
-      console.log(err)
-    }
+  const client = new qiniu.rs.BucketManager(mac)
+  return new Promise((resolve, reject) => {
+    client.listPrefix(bucket, null, (err, res) => {
+      if (!err) resolve(res.items)
+      else reject(err)
+    })
   })
 }
-a()
+
+/**
+ * 将旧bucket所有文件移动到新bucket
+ * @param {string} oldBucket 旧bucket
+ * @param {string} newBucket 新bucket
+ * @param {object} options 配置
+ */
+async function converBucket(oldBucket, newBucket, options = null) {
+  const qiniu = require('qiniu')
+  const mac = new qiniu.auth.digest.Mac(Ak, Sk)
+  const client = new qiniu.rs.BucketManager(mac)
+  const items = await getBucketFileList(oldBucket)
+  if (!items.length) {
+    items.forEach(it => {
+      client.move(oldBucket, it.key, newBucket, it.key, options, (err, ret) => {
+        if (!err) {
+          console.log(ret)
+        }
+      })
+    })
+  }
+}
 
 module.exports = {
   uptoken,
