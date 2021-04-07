@@ -8,7 +8,7 @@ const creatSocket = (server) => {
   })
   io.on('connection', (socket) => {
     console.log('已连接')
-    console.log(Object.keys(socket));
+    // console.log(Object.keys(socket));
     let handshake = socket.handshake
     // console.log(handshake)
     socket.on('disconnect', () => {

@@ -4,8 +4,8 @@
   "description": "smalltalk server for node",
   "main": "app.js",
   "scripts": {
-    "serve": "set NODE_ENV=development&& nodemon app.js",
-    "serve:prod": "set NODE_ENV=production&& nodemon app.js"
+    "dev": "set NODE_ENV=development&& nodemon app.js",
+    "prod": "set NODE_ENV=production&& nodemon app.js"
   },
   "author": "chrisZhu",
   "license": "ISC",
