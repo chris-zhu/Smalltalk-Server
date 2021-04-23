@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 const Mongodb_Config = {
   user: 'admin',
   password: 'admin',
-  host: process.env.NODE_ENV === 'development' ? 'localhost' : '47.103.219.72',
+  // host: process.env.NODE_ENV === 'development' ? 'localhost' : '47.103.219.72',
+  host: '47.103.219.72',
   port: '27017',
   db: 'SmallTalk'
 }

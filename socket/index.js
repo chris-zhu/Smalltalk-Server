@@ -7,6 +7,7 @@ const creatSocket = (server) => {
     }
   })
   io.on('connection', (socket) => {
+    socket.send('hi', 'server api')
     console.log('已连接')
     // console.log(Object.keys(socket));
     let handshake = socket.handshake
@@ -14,9 +15,10 @@ const creatSocket = (server) => {
     socket.on('disconnect', () => {
       console.log('端开链接')
     })
-    socket.on('msg', (from, msg) => {
-      console.log(from)
-      console.log(msg)
+    socket.on('msg', (data) => {
+      console.log(data)
+      socket.emit('msg', { msg: 'server-' + data.msg })
+      // socket.send('msg', { msg: 'server-' + data.msg })
     })
   })
 }
