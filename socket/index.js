@@ -25,23 +25,24 @@ const creatSocket = (server) => {
           const tempUser = { _id, ...data.userInfo }
           users.push({ ...tempUser })
           curUser = { ...tempUser }
+          // 新用户进入了
+          socket.broadcast.emit('userin', curUser)
         }
       }
     })
 
-    socket.on('users', () => {
-      const arr = users.filter((el) => el._id !== curUser._id)
+    socket.on('users', (token) => {
+      let _id = curUser._id
+      if (!_id) {
+        _id = verifyToken(token)._id
+      }
+      const arr = users.filter((el) => el._id !== _id)
       socket.emit('users', arr)
     })
-
-    // console.log(Object.keys(socket));
-    let handshake = socket.handshake
-    // console.log(handshake)
     socket.on('disconnect', () => {
       console.log('端开链接')
     })
     socket.on('msg', (data) => {
-      console.log(data)
       socket.emit('msg', { msg: 'server-' + data.msg })
       // socket.send('msg', { msg: 'server-' + data.msg })
     })
